@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package clients;
+
+// O serviço que a nossa API irá expor
+service ClientService {
+  // Define o método para cadastrar um cliente
+  rpc CreateClient (CreateClientRequest) returns (Client);
+  // Define o método para listar todos os clientes
+  rpc ListClients (Empty) returns (ClientList);
+}
+
+// O objeto 'Client' que será usado para o cadastro e retorno
+message Client {
+  int32 id = 1;
+  string nome = 2;
+  string sobrenome = 3;
+  string telefone = 4;
+}
+
+// A mensagem de requisição para criar um cliente
+message CreateClientRequest {
+  string nome = 1;
+  string sobrenome = 2;
+  string telefone = 3;
+}
+
+// Uma mensagem vazia para requisições sem parâmetros
+message Empty {}
+
+// A mensagem de retorno para a listagem de clientes
+message ClientList {
+  repeated Client clients = 1;
+}

@@ -1,0 +1,81 @@
+version: '3.8'
+
+services:
+  # Serviço de Produtos
+  produtos:
+    build: ./produtos
+    ports:
+      - "3001:3001"
+    networks:
+      - sistema-vendas
+    depends_on:
+      - mysql_db
+    environment:
+      - DB_HOST=mysql_db
+      - DB_USER=root
+      - DB_PASSWORD=papelaria
+      - DB_NAME=papelaria_db
+  
+  # Serviço de Clientes
+  clientes:
+    build: ./clientes
+    ports:
+      - "50051:50051"
+    networks:
+      - sistema-vendas
+    depends_on:
+      - mysql_db
+    environment:
+      - DB_HOST=mysql_db
+      - DB_USER=root
+      - DB_PASSWORD=papelaria
+      - DB_NAME=papelaria_db
+
+  # Serviço de Vendas
+  vendas:
+    build: ./vendas
+    ports:
+      - "8080:8080"
+    networks:
+      - sistema-vendas
+    depends_on:
+      - mysql_db
+    environment:
+      - DB_HOST=mysql_db
+      - DB_USER=root
+      - DB_PASSWORD=papelaria
+      - DB_NAME=papelaria_db
+
+  # Serviço do banco de dados (MySQL)
+  mysql_db:
+    image: mysql:8.0
+    container_name: mysql_db
+    environment:
+      - MYSQL_ROOT_PASSWORD=papelaria
+      - MYSQL_DATABASE=papelaria_db
+    ports:
+      - "3307:3306"
+    networks:
+      - sistema-vendas
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  # Serviço do phpMyAdmin
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    ports:
+      - "8081:80"
+    networks:
+      - sistema-vendas
+    environment:
+      - PMA_HOST=mysql_db
+      - PMA_PORT=3306
+      - MYSQL_ROOT_PASSWORD=papelaria
+
+networks:
+  sistema-vendas:
+    driver: bridge
+
+volumes:
+  mysql_data:
