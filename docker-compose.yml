@@ -40,6 +40,21 @@ services:
       - sistema-vendas
     depends_on:
       - mysql_db
+      - rabbitmq 
+    environment:
+      - DB_HOST=mysql_db
+      - DB_USER=root
+      - DB_PASSWORD=papelaria
+      - DB_NAME=papelaria_db
+      - SPRING_RABBITMQ_HOST=rabbitmq
+  
+  estoque:
+    build: ./estoque
+    networks:
+      - sistema-vendas
+    depends_on:
+      - mysql_db
+      - rabbitmq
     environment:
       - DB_HOST=mysql_db
       - DB_USER=root
@@ -85,6 +100,16 @@ services:
       - PMA_HOST=mysql_db
       - PMA_PORT=3306
       - MYSQL_ROOT_PASSWORD=papelaria
+  
+  # Serviço de Fila de Mensagens (RabbitMQ)
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: rabbitmq
+    ports:
+      - "5672:5672" # Porta padrão para comunicação
+      - "15672:15672" # Porta para a interface de gerenciamento web
+    networks:
+      - sistema-vendas
 
 networks:
   sistema-vendas:

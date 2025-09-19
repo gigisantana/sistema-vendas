@@ -1,8 +1,11 @@
 package com.papelaria.vendas.controller;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class VendaRequest {
+public class VendaRequest implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private Long clienteId;
     private List<Long> produtoIds;
