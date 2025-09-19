@@ -107,6 +107,50 @@ app.get('/produtos', async (req, res) => {
   }
 });
 
+app.get('/produtos/:id', async (req, res) => {
+    try {
+        const [rows] = await connection.execute(`
+            SELECT
+                p.id,
+                p.nome,
+                p.descricao,
+                p.valor,
+                e.quantidade as estoque
+            FROM produto p
+            LEFT JOIN estoque e ON p.id = e.produto_id
+            WHERE p.id = ?
+        `, [req.params.id]);
+
+        if (rows.length > 0) {
+            res.json(rows[0]);
+        } else {
+            res.status(404).json({ error: "Produto não encontrado." });
+        }
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Rota para listar todas as marcas
+app.get('/marcas', async (req, res) => {
+    try {
+        const [rows] = await connection.execute("SELECT id, nome FROM produto_marca");
+        res.json(rows);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Listar os tipos de unidade de venda
+app.get('/unidades', async (req, res) => {
+    try {
+        const [rows] = await connection.execute("SELECT id, tipo FROM produto_unidade_venda");
+        res.json(rows);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 app.listen(port, () => {
   console.log(`Microsserviço de Produtos rodando na porta ${port}`);
 });

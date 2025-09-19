@@ -7,7 +7,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-EXPOSE 50051
+EXPOSE 50052
 
 # O comando que será executado quando o contêiner iniciar
-CMD ["python", "server.py"]
+CMD ["python", "-m", "uvicorn", "server:app", "--host", "0.0.0.0", "--port", "50052"]
