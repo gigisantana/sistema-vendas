@@ -46,6 +46,19 @@ services:
       - DB_PASSWORD=papelaria
       - DB_NAME=papelaria_db
 
+  # Interface (front)
+  frontend:
+    build: ./frontend
+    # A porta padrão do nginx (80) está sendo usada pelo XAMPP
+    ports:
+      - "3000:80"
+    networks:
+      - sistema-vendas
+    depends_on:
+      - produtos
+      - clientes
+      - vendas
+
   # Serviço do banco de dados (MySQL)
   mysql_db:
     image: mysql:8.0
